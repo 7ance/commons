@@ -1,4 +1,4 @@
-package cn.lance.commons.util.entity;
+package cn.lance.commons.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

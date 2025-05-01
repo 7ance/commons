@@ -1,7 +1,7 @@
 package cn.lance.commons.testframework;
 
-import cn.lance.commons.util.entity.Bar;
-import cn.lance.commons.util.entity.Foo;
+import cn.lance.commons.entity.Bar;
+import cn.lance.commons.entity.Foo;
 import cn.lance.commons.util.json.JsonUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;

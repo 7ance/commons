@@ -1,7 +1,7 @@
 package cn.lance.commons.util.json;
 
-import cn.lance.commons.util.entity.Bar;
-import cn.lance.commons.util.entity.Foo;
+import cn.lance.commons.entity.Bar;
+import cn.lance.commons.entity.Foo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
