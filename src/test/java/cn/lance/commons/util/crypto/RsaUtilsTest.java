@@ -8,12 +8,21 @@ import org.junit.jupiter.api.Test;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import java.security.InvalidKeyException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 
 @Slf4j
 @SuppressWarnings("LoggingSimilarMessage")
 public class RsaUtilsTest {
+
+    @Test
+    public void testGenerateKeyPairObject() {
+        Pair<PublicKey, PrivateKey> keyPair = RsaUtils.generateKeyPairObject();
+        log.info("RSA public key: {}", keyPair.getLeft());
+        log.info("RSA private key: {}", keyPair.getRight());
+    }
 
     @Test
     public void testGenerateKeyPair() {
@@ -30,6 +39,19 @@ public class RsaUtilsTest {
     }
 
     @Test
+    public void testSignWithKeyObject() throws SignatureException, InvalidKeyException {
+        Pair<PublicKey, PrivateKey> keyPair = RsaUtils.generateKeyPairObject();
+        log.info("RSA public key: {}", keyPair.getLeft());
+        log.info("RSA private key: {}", keyPair.getRight());
+
+        String plaintext = "Hello, RSA!";
+        log.info("Plaintext: {}", plaintext);
+
+        String sign = RsaUtils.sign(keyPair.getRight(), plaintext);
+        log.info("RSA Sign: {}", sign);
+    }
+
+    @Test
     public void testSign() throws InvalidKeySpecException, SignatureException, InvalidKeyException {
         Pair<String, String> keyPair = RsaUtils.generateKeyPair();
         log.info("RSA public key: {}", keyPair.getLeft());
@@ -40,6 +62,23 @@ public class RsaUtilsTest {
 
         String sign = RsaUtils.sign(keyPair.getRight(), plaintext);
         log.info("RSA Sign: {}", sign);
+    }
+
+    @Test
+    public void testVerifyWithKeyObject() throws InvalidKeySpecException, SignatureException, InvalidKeyException {
+        Pair<PublicKey, PrivateKey> keyPair = RsaUtils.generateKeyPairObject();
+        log.info("RSA public key: {}", keyPair.getLeft());
+        log.info("RSA private key: {}", keyPair.getRight());
+
+        String plaintext = "Hello, RSA!";
+        log.info("Plaintext: {}", plaintext);
+
+        String sign = RsaUtils.sign(keyPair.getRight(), plaintext);
+        log.info("RSA Sign: {}", sign);
+
+        boolean verified = RsaUtils.verify(keyPair.getLeft(), sign, plaintext);
+        log.info("Verify result: {}", verified);
+        Assertions.assertTrue(verified);
     }
 
     @Test
@@ -90,6 +129,19 @@ public class RsaUtilsTest {
     }
 
     @Test
+    public void testEncryptWithKeyObject() throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        Pair<PublicKey, PrivateKey> keyPair = RsaUtils.generateKeyPairObject();
+        log.info("RSA public key: {}", keyPair.getLeft());
+        log.info("RSA private key: {}", keyPair.getRight());
+
+        String plaintext = "Hello, RSA!";
+        log.info("Plaintext: {}", plaintext);
+
+        String ciphertext = RsaUtils.encrypt(keyPair.getLeft(), plaintext);
+        log.info("Ciphertext: {}", ciphertext);
+    }
+
+    @Test
     public void testEncrypt() throws IllegalBlockSizeException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
         Pair<String, String> keyPair = RsaUtils.generateKeyPair();
         log.info("RSA public key: {}", keyPair.getLeft());
@@ -100,6 +152,23 @@ public class RsaUtilsTest {
 
         String ciphertext = RsaUtils.encrypt(keyPair.getLeft(), plaintext);
         log.info("Ciphertext: {}", ciphertext);
+    }
+
+    @Test
+    public void testDecryptWithObject() throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        Pair<PublicKey, PrivateKey> keyPair = RsaUtils.generateKeyPairObject();
+        log.info("RSA public key: {}", keyPair.getLeft());
+        log.info("RSA private key: {}", keyPair.getRight());
+
+        String plaintext = "Hello, RSA!";
+        log.info("Plaintext: {}", plaintext);
+
+        String ciphertext = RsaUtils.encrypt(keyPair.getLeft(), plaintext);
+        log.info("Ciphertext: {}", ciphertext);
+
+        String generatedPlaintext = RsaUtils.decrypt(keyPair.getRight(), ciphertext);
+        log.info("Generated plaintext: {}", generatedPlaintext);
+        Assertions.assertEquals(plaintext, generatedPlaintext);
     }
 
     @Test
@@ -193,6 +262,18 @@ public class RsaUtilsTest {
         log.info("Plaintext: {}", plaintext);
         int length = plaintext.getBytes().length;
         log.info("Text bytes length: {}", length);
+    }
+
+    @Test
+    public void testGetKeyLength() {
+        Pair<String, String> keyPair = RsaUtils.generateKeyPair();
+        log.info("RSA public key: {}", keyPair.getLeft());
+        log.info("RSA private key: {}", keyPair.getRight());
+
+        int publicKeyLength = RsaUtils.getPublicKeyLength(keyPair.getLeft());
+        int privateKeyLength = RsaUtils.getPrivateKeyLength(keyPair.getRight());
+        log.info("publicKeyLength: {}", publicKeyLength);
+        log.info("privateKeyLength: {}", privateKeyLength);
     }
 
 }
