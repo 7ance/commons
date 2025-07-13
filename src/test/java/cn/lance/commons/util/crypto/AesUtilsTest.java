@@ -11,6 +11,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 
 @Slf4j
+@SuppressWarnings("LoggingSimilarMessage")
 public class AesUtilsTest {
 
     @Test
