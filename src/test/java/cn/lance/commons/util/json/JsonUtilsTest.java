@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,27 +18,28 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Slf4j
 public class JsonUtilsTest {
 
     @Test
     public void testGetDefaultObjectMapper() {
         ObjectMapper defaultObjectMapper = JsonUtils.getDefaultObjectMapper();
-        System.out.println(defaultObjectMapper);
+        log.info(defaultObjectMapper.toString());
     }
 
     @Test
     public void testIsValidJson() {
         String str1 = "{\"a\":1,\"b\":2,\"c\":3}";
         boolean valid1 = JsonUtils.isValidJson(str1);
-        System.out.println("valid1: " + valid1);
+        log.info("valid1: {}", valid1);
 
         String str2 = "{}";
         boolean valid2 = JsonUtils.isValidJson(str2);
-        System.out.println("valid2: " + valid2);
+        log.info("valid2: {}", valid2);
 
         String str3 = "Programming for fun";
         boolean valid3 = JsonUtils.isValidJson(str3);
-        System.out.println("valid3: " + valid3);
+        log.info("valid3: {}", valid3);
     }
 
     @Test
@@ -46,7 +48,7 @@ public class JsonUtilsTest {
         bar.setInteger(93);
 
         String jsonBar = JsonUtils.write(bar);
-        System.out.println("jsonBar: " + jsonBar);
+        log.info("jsonBar: {}", jsonBar);
 
         Foo foo = new Foo();
         foo.setC('T');
@@ -88,7 +90,7 @@ public class JsonUtilsTest {
         foo.setBarList(barList);
 
         String jsonFoo = JsonUtils.write(foo);
-        System.out.println("jsonFoo: " + jsonFoo);
+        log.info("jsonFoo: {}", jsonFoo);
     }
 
     @Test
@@ -97,7 +99,7 @@ public class JsonUtilsTest {
         bar.setInteger(93);
 
         String jsonBar = JsonUtils.writePretty(bar);
-        System.out.println("jsonBar pretty: " + jsonBar);
+        log.info("jsonBar pretty: {}", jsonBar);
 
         Foo foo = new Foo();
         foo.setC('T');
@@ -139,7 +141,7 @@ public class JsonUtilsTest {
         foo.setBarList(barList);
 
         String jsonFoo = JsonUtils.writePretty(foo);
-        System.out.println("jsonFoo pretty: " + jsonFoo);
+        log.info("jsonFoo pretty: {}", jsonFoo);
     }
 
     @Test
@@ -190,18 +192,18 @@ public class JsonUtilsTest {
         enable.add(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
         List<SerializationFeature> disable = new ArrayList<>();
         String jsonFoo = JsonUtils.writeWithFeature(foo, enable, disable);
-        System.out.println("jsonFoo with feature: " + jsonFoo);
+        log.info("jsonFoo with feature: {}", jsonFoo);
     }
 
     @Test
     public void testRead() throws JsonProcessingException {
         String json1 = "{\"integer\":93}";
         Bar bar = JsonUtils.read(json1, Bar.class);
-        System.out.println("bar: " + bar);
+        log.info("bar: {}", bar);
 
         String json2 = "{\"c\":\"T\",\"cha\":\"K\",\"str\":\"Complex\",\"bo\":true,\"boo\":false,\"by\":93,\"byt\":37,\"sho\":48,\"shor\":49,\"in\":12,\"integer\":13,\"lo\":14,\"lon\":15,\"fl\":17.0,\"flo\":18.0,\"doubleAlpha\":21.02,\"doubleBeta\":21.05,\"date\":\"2025-03-19 22:59:52\",\"localDate\":\"2025-03-19\",\"localDateTime\":\"2025-03-19 22:59:52\",\"bigInteger\":10,\"bigDecimal\":2,\"stringList\":[\"X\",\"Y\",\"Z\"],\"map\":{\"key1\":456,\"key2\":789},\"barList\":[{\"integer\":93}]}";
         Foo foo = JsonUtils.read(json2, Foo.class);
-        System.out.println("foo: " + foo);
+        log.info("foo: {}", foo);
     }
 
     @Test
@@ -211,7 +213,7 @@ public class JsonUtilsTest {
         enable.add(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         List<DeserializationFeature> disable = new ArrayList<>();
         Bar bar1 = JsonUtils.readWithFeature(json1, Bar.class, enable, disable);
-        System.out.println("bar1: " + bar1);
+        log.info("bar1: {}", bar1);
 
         Exception exception = Assertions.assertThrows(UnrecognizedPropertyException.class,
                 () -> {
@@ -220,9 +222,9 @@ public class JsonUtilsTest {
                     enable2.add(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
                     List<DeserializationFeature> disable2 = new ArrayList<>();
                     Bar bar2 = JsonUtils.readWithFeature(json2, Bar.class, enable2, disable2);
-                    System.out.println("bar2: " + bar2);
+                    log.info("bar2: {}", bar2);
                 });
-        System.out.println(exception.toString());
+        log.info(exception.toString());
     }
 
     @Test
@@ -235,10 +237,10 @@ public class JsonUtilsTest {
 
 
         List<Bar> barListParsed = JsonUtils.readList(listJson, Bar.class);
-        System.out.println("barListParsed: " + barListParsed);
+        log.info("barListParsed: {}", barListParsed);
 
         List<Foo> fooListParsed = JsonUtils.readList(listJson, Foo.class);
-        System.out.println("fooListParsed: " + fooListParsed);
+        log.info("fooListParsed: {}", fooListParsed);
     }
 
     @Test
@@ -277,7 +279,7 @@ public class JsonUtilsTest {
                   } ]
                 }""";
         Map<String, Object> map = JsonUtils.readMap(json);
-        System.out.println("map: " + map);
+        log.info("map: {}", map);
     }
 
     @Test
@@ -316,7 +318,7 @@ public class JsonUtilsTest {
                   } ]
                 }""";
         JsonNode jsonNode = JsonUtils.readTree(json);
-        System.out.println("jsonNode: " + jsonNode);
+        log.info("jsonNode: {}", jsonNode);
     }
 
     @Test
@@ -326,7 +328,7 @@ public class JsonUtilsTest {
                   "integer" : 93
                 }""";
         String compress1 = JsonUtils.compress(json1);
-        System.out.println("compress1: " + compress1);
+        log.info("compress1: {}", compress1);
 
         String json2 = """
                 {
@@ -362,18 +364,18 @@ public class JsonUtilsTest {
                   } ]
                 }""";
         String compress2 = JsonUtils.compress(json2);
-        System.out.println("compress2: " + compress2);
+        log.info("compress2: {}", compress2);
     }
 
     @Test
     public void pretty() throws JsonProcessingException {
         String json1 = "{\"integer\":93}";
         String pretty1 = JsonUtils.pretty(json1);
-        System.out.println("pretty1: " + pretty1);
+        log.info("pretty1: {}", pretty1);
 
         String json2 = "{\"c\":\"T\",\"cha\":\"K\",\"str\":\"Complex\",\"bo\":true,\"boo\":false,\"by\":93,\"byt\":37,\"sho\":48,\"shor\":49,\"in\":12,\"integer\":13,\"lo\":14,\"lon\":15,\"fl\":17.0,\"flo\":18.0,\"doubleAlpha\":21.02,\"doubleBeta\":21.05,\"date\":\"2025-03-19 22:59:52\",\"localDate\":\"2025-03-19\",\"localDateTime\":\"2025-03-19 22:59:52\",\"bigInteger\":10,\"bigDecimal\":2,\"stringList\":[\"X\",\"Y\",\"Z\"],\"map\":{\"key1\":456,\"key2\":789},\"barList\":[{\"integer\":93}]}";
         String pretty = JsonUtils.pretty(json2);
-        System.out.println("pretty2: " + pretty);
+        log.info("pretty2: {}", pretty);
     }
 
 }

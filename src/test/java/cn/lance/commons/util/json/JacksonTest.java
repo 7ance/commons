@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
@@ -16,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
 
+@Slf4j
+@SuppressWarnings("LoggingSimilarMessage")
 public class JacksonTest {
 
     @Test
@@ -24,8 +27,8 @@ public class JacksonTest {
 
         Date date = new Date();
         String dateJsonDefault = mapper.writeValueAsString(date);
-        System.out.println("dateJsonDefault: " + dateJsonDefault);
-        System.out.println("Default DateFormat: " + mapper.getDateFormat());
+        log.info("dateJsonDefault: {}", dateJsonDefault);
+        log.info("Default DateFormat: {}", mapper.getDateFormat());
 
         mapper.setDateFormat(
                 new StdDateFormat()
@@ -33,13 +36,13 @@ public class JacksonTest {
                         .withTimeZone(TimeZone.getDefault())
         );
         String dateJsonStd = mapper.writeValueAsString(date);
-        System.out.println("dateJsonStd: " + dateJsonStd);
-        System.out.println("Standard DateFormat: " + mapper.getDateFormat());
+        log.info("dateJsonStd: {}", dateJsonStd);
+        log.info("Standard DateFormat: {}", mapper.getDateFormat());
 
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         String dateJsonSimple = mapper.writeValueAsString(date);
-        System.out.println("dateJsonSimple: " + dateJsonSimple);
-        System.out.println("Simple DateFormat: " + mapper.getDateFormat());
+        log.info("dateJsonSimple: {}", dateJsonSimple);
+        log.info("Simple DateFormat: {}", mapper.getDateFormat());
     }
 
     @Test
@@ -51,11 +54,11 @@ public class JacksonTest {
 
         LocalDate date = LocalDate.now();
         String dateJsonDefault = mapper.writeValueAsString(date);
-        System.out.println("dateJsonDefault: " + dateJsonDefault);
+        log.info("dateJsonDefault: {}", dateJsonDefault);
 
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String dateJsonDisabledTimestamp = mapper.writeValueAsString(date);
-        System.out.println("dateJsonDisabledTimestamp: " + dateJsonDisabledTimestamp);
+        log.info("dateJsonDisabledTimestamp: {}", dateJsonDisabledTimestamp);
     }
 
     @Test
@@ -67,11 +70,11 @@ public class JacksonTest {
 
         LocalTime time = LocalTime.now();
         String dateTimeJsonDefault = mapper.writeValueAsString(time);
-        System.out.println("timeJsonDefault: " + dateTimeJsonDefault);
+        log.info("timeJsonDefault: {}", dateTimeJsonDefault);
 
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String dateTimeJsonDisabledTimestamp = mapper.writeValueAsString(time);
-        System.out.println("timeJsonDisabledTimestamp: " + dateTimeJsonDisabledTimestamp);
+        log.info("timeJsonDisabledTimestamp: {}", dateTimeJsonDisabledTimestamp);
 
         // module只能register一次，所以重新创建一个ObjectMapper实例
         mapper = new ObjectMapper();
@@ -82,7 +85,7 @@ public class JacksonTest {
         module.addSerializer(serializer);
         mapper.registerModule(module);
         String dateJson = mapper.writeValueAsString(time);
-        System.out.println("timeJson: " + dateJson);
+        log.info("timeJson: {}", dateJson);
     }
 
     @Test
@@ -94,11 +97,11 @@ public class JacksonTest {
 
         LocalDateTime dateTime = LocalDateTime.now();
         String dateTimeJsonDefault = mapper.writeValueAsString(dateTime);
-        System.out.println("dateTimeJsonDefault: " + dateTimeJsonDefault);
+        log.info("dateTimeJsonDefault: {}", dateTimeJsonDefault);
 
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         String dateTimeJsonDisabledTimestamp = mapper.writeValueAsString(dateTime);
-        System.out.println("dateTimeJsonDisabledTimestamp: " + dateTimeJsonDisabledTimestamp);
+        log.info("dateTimeJsonDisabledTimestamp: {}", dateTimeJsonDisabledTimestamp);
 
         // module只能register一次，所以重新创建一个ObjectMapper实例
         mapper = new ObjectMapper();
@@ -109,7 +112,7 @@ public class JacksonTest {
         module.addSerializer(serializer);
         mapper.registerModule(module);
         String dateJson = mapper.writeValueAsString(dateTime);
-        System.out.println("dateJson: " + dateJson);
+        log.info("dateJson: {}", dateJson);
     }
 
 

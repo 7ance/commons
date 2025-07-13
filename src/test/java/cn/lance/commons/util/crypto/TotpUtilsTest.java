@@ -1,8 +1,11 @@
 package cn.lance.commons.util.crypto;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@Slf4j
+@SuppressWarnings("LoggingSimilarMessage")
 public class TotpUtilsTest {
 
     @Test
@@ -11,7 +14,7 @@ public class TotpUtilsTest {
         String accountName = "bar";
 
         String uri = TotpUtils.generate(issuer, accountName);
-        System.out.println("OTP URI: " + uri);
+        log.info("OTP URI: {}", uri);
     }
 
     @Test
@@ -20,10 +23,10 @@ public class TotpUtilsTest {
         String accountName = "bar";
 
         String uri = TotpUtils.generate(issuer, accountName);
-        System.out.println("OTP URI: " + uri);
+        log.info("OTP URI: {}", uri);
 
         String secret = TotpUtils.getSecretFromUri(uri);
-        System.out.println("OTP Secret: " + secret);
+        log.info("OTP Secret: {}", secret);
     }
 
     @Test
@@ -32,13 +35,13 @@ public class TotpUtilsTest {
         String accountName = "bar";
 
         String uri = TotpUtils.generate(issuer, accountName);
-        System.out.println("OTP URI: " + uri);
+        log.info("OTP URI: {}", uri);
 
         String secret = TotpUtils.getSecretFromUri(uri);
-        System.out.println("OTP secret: " + secret);
+        log.info("OTP secret: {}", secret);
 
         String passcode = TotpUtils.generateCode(secret);
-        System.out.println("OTP passcode: " + passcode);
+        log.info("OTP passcode: {}", passcode);
     }
 
     @Test
@@ -47,16 +50,16 @@ public class TotpUtilsTest {
         String accountName = "bar";
 
         String uri = TotpUtils.generate(issuer, accountName);
-        System.out.println("OTP URI: " + uri);
+        log.info("OTP URI: {}", uri);
 
         String secret = TotpUtils.getSecretFromUri(uri);
-        System.out.println("OTP secret: " + secret);
+        log.info("OTP secret: {}", secret);
 
         String passcode = TotpUtils.generateCode(secret);
-        System.out.println("OTP passcode: " + passcode);
+        log.info("OTP passcode: {}", passcode);
 
         boolean verified = TotpUtils.verify(secret, passcode);
-        System.out.println("OTP verified: " + verified);
+        log.info("OTP verified: {}", verified);
         Assertions.assertTrue(verified);
     }
 
