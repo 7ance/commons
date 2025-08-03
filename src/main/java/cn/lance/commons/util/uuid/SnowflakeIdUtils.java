@@ -76,8 +76,8 @@ public class SnowflakeIdUtils {
             // 与上一ID处于同一毫秒
             sequence = (sequence + 1) & sequenceMask;
 
+            // 当前毫秒内4096个ID已用尽
             if (sequence == 0) {
-                // 当前毫秒内4096个ID已用尽
                 timestamp = tilNextMillis(lastTimestamp);
             }
         } else {
