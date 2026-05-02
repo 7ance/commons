@@ -10,6 +10,9 @@ import java.util.Properties;
 
 public class ConfigUtils {
 
+    private ConfigUtils() {
+    }
+
     /**
      * 加载 .properties 配置文件
      *

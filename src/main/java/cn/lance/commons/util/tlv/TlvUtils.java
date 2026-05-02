@@ -10,6 +10,9 @@ import java.util.List;
  */
 public class TlvUtils {
 
+    private TlvUtils() {
+    }
+
     /**
      * 默认解析（深度2层）
      *
