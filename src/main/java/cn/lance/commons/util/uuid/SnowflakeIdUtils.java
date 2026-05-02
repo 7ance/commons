@@ -68,7 +68,7 @@ public class SnowflakeIdUtils {
         if (timestamp < lastTimestamp) {
             throw new IllegalStateException("Clock moved backwards. Refusing to generate ID.");
         }
-        if (timestamp - epoch > (1L << 42) - 1) {
+        if (timestamp - epoch > (1L << 41) - 1) {
             throw new IllegalStateException("Timestamp out of range.");
         }
 

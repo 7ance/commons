@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -260,7 +261,7 @@ public class RsaUtilsTest {
     public void testDataSize() {
         String plaintext = "Hello, RSA!";
         log.info("Plaintext: {}", plaintext);
-        int length = plaintext.getBytes().length;
+        int length = plaintext.getBytes(StandardCharsets.UTF_8).length;
         log.info("Text bytes length: {}", length);
     }
 

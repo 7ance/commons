@@ -6,6 +6,7 @@ import org.apache.commons.codec.binary.Hex;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -92,7 +93,7 @@ public class AesUtils {
 
         // encrypt
         byte[] bytes;
-        bytes = cipher.doFinal(plaintext.getBytes());
+        bytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
 
         // encode result
         return new String(Hex.encodeHex(bytes));
@@ -145,7 +146,7 @@ public class AesUtils {
      */
     public static String encrypt(String key, String iv, String plaintext) throws DecoderException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Objects.requireNonNull(key, "key must not be null");
-        Objects.requireNonNull(key, "iv must not be null");
+        Objects.requireNonNull(iv, "iv must not be null");
         Objects.requireNonNull(plaintext, "plaintext must not be null");
 
         // init cipher step1
@@ -167,7 +168,7 @@ public class AesUtils {
 
         // encrypt
         byte[] bytes;
-        bytes = cipher.doFinal(plaintext.getBytes());
+        bytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
 
         // encode result
         return new String(Hex.encodeHex(bytes));
@@ -183,7 +184,7 @@ public class AesUtils {
      */
     public static String decrypt(String key, String iv, String ciphertext) throws DecoderException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Objects.requireNonNull(key, "key must not be null");
-        Objects.requireNonNull(key, "iv must not be null");
+        Objects.requireNonNull(iv, "iv must not be null");
         Objects.requireNonNull(ciphertext, "ciphertext must not be null");
 
         // init cipher step1

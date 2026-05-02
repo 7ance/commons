@@ -6,6 +6,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -90,7 +91,7 @@ public class RsaUtils {
         }
 
         signature.initSign(privateKey);
-        signature.update(plaintext.getBytes());
+        signature.update(plaintext.getBytes(StandardCharsets.UTF_8));
 
         byte[] bytes = signature.sign();
         return Base64.getEncoder().encodeToString(bytes);
@@ -143,7 +144,7 @@ public class RsaUtils {
         }
 
         signature.initVerify(publicKey);
-        signature.update(plaintext.getBytes());
+        signature.update(plaintext.getBytes(StandardCharsets.UTF_8));
 
         return signature.verify(Base64.getDecoder().decode(sign));
     }
@@ -196,7 +197,7 @@ public class RsaUtils {
 
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
-        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
+        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
@@ -246,7 +247,7 @@ public class RsaUtils {
 
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-        byte[] ciphertextBytes = Base64.getDecoder().decode(ciphertext.getBytes());
+        byte[] ciphertextBytes = Base64.getDecoder().decode(ciphertext);
         byte[] plaintextBytes = cipher.doFinal(ciphertextBytes);
         return new String(plaintextBytes);
     }

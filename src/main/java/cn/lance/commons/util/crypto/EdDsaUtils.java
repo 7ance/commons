@@ -2,6 +2,7 @@ package cn.lance.commons.util.crypto;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -81,7 +82,7 @@ public class EdDsaUtils {
         PrivateKey generatedPrivateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKeyBytes));
 
         signature.initSign(generatedPrivateKey);
-        signature.update(plaintext.getBytes());
+        signature.update(plaintext.getBytes(StandardCharsets.UTF_8));
 
         byte[] bytes = signature.sign();
         return Base64.getEncoder().encodeToString(bytes);
@@ -115,7 +116,7 @@ public class EdDsaUtils {
         PublicKey generatedPublicKey = keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyBytes));
 
         signature.initVerify(generatedPublicKey);
-        signature.update(plaintext.getBytes());
+        signature.update(plaintext.getBytes(StandardCharsets.UTF_8));
 
         return signature.verify(Base64.getDecoder().decode(sign));
     }

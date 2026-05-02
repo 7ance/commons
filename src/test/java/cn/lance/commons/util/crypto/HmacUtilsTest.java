@@ -1,6 +1,7 @@
 package cn.lance.commons.util.crypto;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.DecoderException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ public class HmacUtilsTest {
     }
 
     @Test
-    public void testSignSha256() throws NoSuchAlgorithmException, InvalidKeyException {
+    public void testSignSha256() throws NoSuchAlgorithmException, InvalidKeyException, DecoderException {
         String algoSha256 = "HmacSHA256";
         String keySha256 = HmacUtils.generateKey(algoSha256, 256);
         log.info("SHA256 key: {}", keySha256);
@@ -39,7 +40,7 @@ public class HmacUtilsTest {
     }
 
     @Test
-    public void testSignMd5() throws NoSuchAlgorithmException, InvalidKeyException {
+    public void testSignMd5() throws NoSuchAlgorithmException, InvalidKeyException, DecoderException {
         String algoMd5 = "HmacMD5";
         String keyMd5 = HmacUtils.generateKey(algoMd5, 256);
         log.info("MD5 key: {}", keyMd5);
@@ -52,7 +53,7 @@ public class HmacUtilsTest {
     }
 
     @Test
-    public void testVerifySha256() throws NoSuchAlgorithmException, InvalidKeyException {
+    public void testVerifySha256() throws NoSuchAlgorithmException, InvalidKeyException, DecoderException {
         String algoSha256 = "HmacSHA256";
         String keySha256 = HmacUtils.generateKey(algoSha256, 256);
         log.info("SHA256 key: {}", keySha256);
@@ -69,7 +70,7 @@ public class HmacUtilsTest {
     }
 
     @Test
-    public void testVerifyMd5() throws NoSuchAlgorithmException, InvalidKeyException {
+    public void testVerifyMd5() throws NoSuchAlgorithmException, InvalidKeyException, DecoderException {
         String algoMd5 = "HmacMD5";
         String keyMd5 = HmacUtils.generateKey(algoMd5, 256);
         log.info("MD5 key: {}", keyMd5);

@@ -61,6 +61,10 @@ public class TotpUtilsTest {
         boolean verified = TotpUtils.verify(secret, passcode);
         log.info("OTP verified: {}", verified);
         Assertions.assertTrue(verified);
+
+        boolean verifiedInterval = TotpUtils.verify(secret, passcode, 0);
+        log.info("OTP verified with interval: {}", verifiedInterval);
+        Assertions.assertTrue(verifiedInterval);
     }
 
 }

@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -37,7 +38,7 @@ public class JwtUtils {
         Objects.requireNonNull(key, "key can not be null");
         Objects.requireNonNull(claims, "claims can not be null");
 
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), ALG_HS256);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), ALG_HS256);
         return Jwts.builder()
                 .claims(claims)
                 .signWith(secretKeySpec)
@@ -55,7 +56,7 @@ public class JwtUtils {
         Objects.requireNonNull(key, "key can not be null");
         Objects.requireNonNull(token, "token can not be null");
 
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), ALG_HS256);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), ALG_HS256);
         return Jwts.parser()
                 .verifyWith(secretKeySpec).build()
                 .parseSignedClaims(token)

@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
@@ -129,7 +130,7 @@ public class EdDsaUtilsTest {
     public void testDataSize() {
         String plaintext = "Hello, EdDSA!";
         log.info("Plaintext: {}", plaintext);
-        int length = plaintext.getBytes().length;
+        int length = plaintext.getBytes(StandardCharsets.UTF_8).length;
         log.info("Text bytes length: {}", length);
     }
 

@@ -1,11 +1,13 @@
 package cn.lance.commons.util.crypto;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
@@ -44,15 +46,15 @@ public class HmacUtils {
      * @return 签名（十六进制）
      */
     public static String sign(String algorithm, String key, String plaintext)
-            throws NoSuchAlgorithmException, InvalidKeyException {
+            throws NoSuchAlgorithmException, InvalidKeyException, DecoderException {
         Objects.requireNonNull(algorithm, "algorithm must not be null");
         Objects.requireNonNull(key, "key must not be null");
         Objects.requireNonNull(plaintext, "plaintext must not be null");
 
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), algorithm);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(Hex.decodeHex(key), algorithm);
         Mac mac = Mac.getInstance(algorithm);
         mac.init(secretKeySpec);
-        return Hex.encodeHexString(mac.doFinal(plaintext.getBytes()));
+        return Hex.encodeHexString(mac.doFinal(plaintext.getBytes(StandardCharsets.UTF_8)));
     }
 
     /**
@@ -64,7 +66,7 @@ public class HmacUtils {
      * @param sign      签名（十六进制）
      * @return 验证结果 true=一致 false=不一致
      */
-    public static boolean verify(String algorithm, String key, String plaintext, String sign) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static boolean verify(String algorithm, String key, String plaintext, String sign) throws NoSuchAlgorithmException, InvalidKeyException, DecoderException {
         Objects.requireNonNull(algorithm, "algorithm must not be null");
         Objects.requireNonNull(key, "key must not be null");
         Objects.requireNonNull(plaintext, "plaintext must not be null");

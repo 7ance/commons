@@ -107,6 +107,18 @@ public class TotpUtils {
      * @return true=通过 false=不通过
      */
     public static boolean verify(String secret, String passcode) {
+        return verify(secret, passcode, ADJACENT_INTERVALS);
+    }
+
+    /**
+     * 校验密码是否有效
+     *
+     * @param secret   密钥（Base32）
+     * @param passcode 密码
+     * @param interval 步长
+     * @return true=通过 false=不通过
+     */
+    public static boolean verify(String secret, String passcode, Integer interval) {
         Objects.requireNonNull(secret, "secret must not be null");
         Objects.requireNonNull(passcode, "passcode must not be null");
 
@@ -116,8 +128,8 @@ public class TotpUtils {
 
         long currentInterval = System.currentTimeMillis() / 1000 / PERIOD;
 
-        int pastIntervals = Math.max(ADJACENT_INTERVALS, 0);
-        int futureIntervals = Math.max(ADJACENT_INTERVALS, 0);
+        int pastIntervals = Math.max(interval, 0);
+        int futureIntervals = Math.max(interval, 0);
 
         // verify pass intervals before current time, verify future intervals after
         for (int i = -pastIntervals; i <= futureIntervals; i++) {

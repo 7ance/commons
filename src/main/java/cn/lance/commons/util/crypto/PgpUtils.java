@@ -19,6 +19,7 @@ import org.pgpainless.key.protection.SecretKeyRingProtector;
 import org.pgpainless.util.Passphrase;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
@@ -113,7 +114,7 @@ public class PgpUtils {
         Objects.requireNonNull(pgpSecretKey, "pgpSecretKey should not be null");
 
         try (OutputStream out = new ByteArrayOutputStream();
-             InputStream plaintextInputStream = new ByteArrayInputStream(plaintext.getBytes())) {
+             InputStream plaintextInputStream = new ByteArrayInputStream(plaintext.getBytes(StandardCharsets.UTF_8))) {
 
             SecretKeyRingProtector secretKeyRingProtector = SecretKeyRingProtector.unlockEachKeyWith(
                     Passphrase.fromPassword(passphrase),
@@ -153,7 +154,7 @@ public class PgpUtils {
         PGPPublicKeyRing pgpPublicKey = PGPainless.readKeyRing().publicKeyRing(publicKey);
         Objects.requireNonNull(pgpPublicKey, "pgpPublicKey should not be null");
         try (OutputStream out = new ByteArrayOutputStream();
-             InputStream encryptedInputStream = new ByteArrayInputStream(message.getBytes())) {
+             InputStream encryptedInputStream = new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8))) {
             DecryptionStream decryptionStream = PGPainless.decryptAndOrVerify()
                     .onInputStream(encryptedInputStream)
                     .withOptions(new ConsumerOptions()
@@ -178,7 +179,7 @@ public class PgpUtils {
         Objects.requireNonNull(message, "message should not be null");
 
         try (OutputStream out = new ByteArrayOutputStream();
-             InputStream encryptedInputStream = new ByteArrayInputStream(message.getBytes())) {
+             InputStream encryptedInputStream = new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8))) {
             DecryptionStream decryptionStream = PGPainless.decryptAndOrVerify()
                     .onInputStream(encryptedInputStream)
                     .withOptions(new ConsumerOptions());
@@ -206,7 +207,7 @@ public class PgpUtils {
         Objects.requireNonNull(pgpPublicKey, "pgpPublicKey should not be null");
 
         try (OutputStream out = new ByteArrayOutputStream();
-             InputStream plaintextInputStream = new ByteArrayInputStream(plaintext.getBytes())) {
+             InputStream plaintextInputStream = new ByteArrayInputStream(plaintext.getBytes(StandardCharsets.UTF_8))) {
 
             EncryptionStream encryptionStream = PGPainless.encryptAndOrSign()
                     .onOutputStream(out)
@@ -242,7 +243,7 @@ public class PgpUtils {
         Objects.requireNonNull(pgpSecretKey, "pgpSecretKey should not be null");
 
         try (OutputStream out = new ByteArrayOutputStream();
-             InputStream encryptedInputStream = new ByteArrayInputStream(message.getBytes())) {
+             InputStream encryptedInputStream = new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8))) {
 
             SecretKeyRingProtector secretKeyRingProtector = SecretKeyRingProtector.unlockEachKeyWith(
                     Passphrase.fromPassword(passphrase),
@@ -285,7 +286,7 @@ public class PgpUtils {
         Objects.requireNonNull(pgpSecretKey, "pgpSecretKey should not be null");
 
         try (OutputStream out = new ByteArrayOutputStream();
-             InputStream plaintextInputStream = new ByteArrayInputStream(plaintext.getBytes())) {
+             InputStream plaintextInputStream = new ByteArrayInputStream(plaintext.getBytes(StandardCharsets.UTF_8))) {
 
             SecretKeyRingProtector secretKeyRingProtector = SecretKeyRingProtector.unlockEachKeyWith(
                     Passphrase.fromPassword(passphrase),
@@ -336,7 +337,7 @@ public class PgpUtils {
         Objects.requireNonNull(pgpSecretKey, "pgpSecretKey should not be null");
 
         try (OutputStream out = new ByteArrayOutputStream();
-             InputStream encryptedInputStream = new ByteArrayInputStream(message.getBytes())) {
+             InputStream encryptedInputStream = new ByteArrayInputStream(message.getBytes(StandardCharsets.UTF_8))) {
 
             SecretKeyRingProtector secretKeyRingProtector = SecretKeyRingProtector.unlockEachKeyWith(
                     Passphrase.fromPassword(passphrase),

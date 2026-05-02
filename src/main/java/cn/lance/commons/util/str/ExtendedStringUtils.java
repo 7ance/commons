@@ -1,9 +1,8 @@
 package cn.lance.commons.util.str;
 
-public class StringUtils extends org.apache.commons.lang3.StringUtils {
+public class ExtendedStringUtils {
 
-    @SuppressWarnings("deprecation")
-    private StringUtils() {
+    private ExtendedStringUtils() {
     }
 
     /**
