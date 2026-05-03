@@ -125,7 +125,7 @@ public class JsonUtils {
         return OBJECT_MAPPER.readTree(json);
     }
 
-    public static String compress(String json) throws JsonProcessingException {
+    public static String minify(String json) throws JsonProcessingException {
         JsonNode node = OBJECT_MAPPER.readTree(json);
         return OBJECT_MAPPER.writeValueAsString(node);
     }

@@ -322,13 +322,13 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void compress() throws JsonProcessingException {
+    public void minify() throws JsonProcessingException {
         String json1 = """
                 {
                   "integer" : 93
                 }""";
-        String compress1 = JsonUtils.compress(json1);
-        log.info("compress1: {}", compress1);
+        String minified1 = JsonUtils.minify(json1);
+        log.info("minified1: {}", minified1);
 
         String json2 = """
                 {
@@ -363,8 +363,8 @@ public class JsonUtilsTest {
                     "integer" : 93
                   } ]
                 }""";
-        String compress2 = JsonUtils.compress(json2);
-        log.info("compress2: {}", compress2);
+        String minified2 = JsonUtils.minify(json2);
+        log.info("minified2: {}", minified2);
     }
 
     @Test
