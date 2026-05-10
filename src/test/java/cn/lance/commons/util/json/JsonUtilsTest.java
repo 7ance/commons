@@ -2,12 +2,10 @@ package cn.lance.commons.util.json;
 
 import cn.lance.commons.entity.Bar;
 import cn.lance.commons.entity.Foo;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,7 +41,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void testWrite() throws JsonProcessingException {
+    public void testWrite() {
         Bar bar = new Bar();
         bar.setInteger(93);
 
@@ -94,7 +92,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void testWritePretty() throws JsonProcessingException {
+    public void testWritePretty() {
         Bar bar = new Bar();
         bar.setInteger(93);
 
@@ -145,7 +143,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void testWriteWithFeature() throws JsonProcessingException {
+    public void testWriteWithFeature() {
         Bar bar = new Bar();
         bar.setInteger(93);
 
@@ -188,15 +186,14 @@ public class JsonUtilsTest {
         barList.add(bar);
         foo.setBarList(barList);
 
-        List<SerializationFeature> enable = new ArrayList<>();
-        enable.add(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS);
-        List<SerializationFeature> disable = new ArrayList<>();
+        SerializationFeature[] enable = { SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS };
+        SerializationFeature[] disable = {};
         String jsonFoo = JsonUtils.writeWithFeature(foo, enable, disable);
         log.info("jsonFoo with feature: {}", jsonFoo);
     }
 
     @Test
-    public void testRead() throws JsonProcessingException {
+    public void testRead() {
         String json1 = "{\"integer\":93}";
         Bar bar = JsonUtils.read(json1, Bar.class);
         log.info("bar: {}", bar);
@@ -207,20 +204,18 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void testReadWithFeature() throws JsonProcessingException {
+    public void testReadWithFeature() {
         String json1 = "{\"integer\":93}";
-        List<DeserializationFeature> enable = new ArrayList<>();
-        enable.add(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        List<DeserializationFeature> disable = new ArrayList<>();
+        DeserializationFeature[] enable = { DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES };
+        DeserializationFeature[] disable = {};
         Bar bar1 = JsonUtils.readWithFeature(json1, Bar.class, enable, disable);
         log.info("bar1: {}", bar1);
 
-        Exception exception = Assertions.assertThrows(UnrecognizedPropertyException.class,
+        Exception exception = Assertions.assertThrows(RuntimeException.class,
                 () -> {
                     String json2 = "{\"not-exist\":77}";
-                    List<DeserializationFeature> enable2 = new ArrayList<>();
-                    enable2.add(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-                    List<DeserializationFeature> disable2 = new ArrayList<>();
+                    DeserializationFeature[] enable2 = { DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES };
+                    DeserializationFeature[] disable2 = {};
                     Bar bar2 = JsonUtils.readWithFeature(json2, Bar.class, enable2, disable2);
                     log.info("bar2: {}", bar2);
                 });
@@ -228,7 +223,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void testReadList() throws JsonProcessingException {
+    public void testReadList() {
         List<Bar> barList = new ArrayList<>();
         barList.add(new Bar(1));
         barList.add(new Bar(2));
@@ -244,7 +239,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void testReadMap() throws JsonProcessingException {
+    public void testReadMap() {
         String json = """
                 {
                   "c" : "T",
@@ -283,7 +278,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void testReadTree() throws JsonProcessingException {
+    public void testReadTree() {
         String json = """
                 {
                   "c" : "T",
@@ -322,7 +317,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void minify() throws JsonProcessingException {
+    public void minify() {
         String json1 = """
                 {
                   "integer" : 93
@@ -368,7 +363,7 @@ public class JsonUtilsTest {
     }
 
     @Test
-    public void pretty() throws JsonProcessingException {
+    public void pretty() {
         String json1 = "{\"integer\":93}";
         String pretty1 = JsonUtils.pretty(json1);
         log.info("pretty1: {}", pretty1);

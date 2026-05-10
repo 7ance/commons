@@ -67,72 +67,120 @@ public class JsonUtils {
         }
     }
 
-    public static String write(Object obj) throws JsonProcessingException {
-        return OBJECT_MAPPER.writeValueAsString(obj);
+    public static String write(Object obj) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String writePretty(Object obj) throws JsonProcessingException {
-        return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+    public static String writePretty(Object obj) {
+        try {
+            return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String writeWithFeature(
             Object obj,
-            List<SerializationFeature> enable,
-            List<SerializationFeature> disable
-    ) throws JsonProcessingException {
+            SerializationFeature[] enable,
+            SerializationFeature[] disable
+    ) {
         ObjectMapper currentMapper = getNewObjectMapper();
 
         if (enable != null) {
-            enable.forEach(currentMapper::enable);
+            for (SerializationFeature feature : enable) {
+                currentMapper.enable(feature);
+            }
         }
         if (disable != null) {
-            disable.forEach(currentMapper::disable);
+            for (SerializationFeature feature : disable) {
+                currentMapper.disable(feature);
+            }
         }
 
-        return currentMapper.writeValueAsString(obj);
+        try {
+            return currentMapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static <T> T read(String json, Class<T> clazz) throws JsonProcessingException {
-        return OBJECT_MAPPER.readValue(json, clazz);
+    public static <T> T read(String json, Class<T> clazz) {
+        try {
+            return OBJECT_MAPPER.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static <T> T readWithFeature(
             String json,
             Class<T> clazz,
-            List<DeserializationFeature> enable,
-            List<DeserializationFeature> disable
-    ) throws JsonProcessingException {
+            DeserializationFeature[] enable,
+            DeserializationFeature[] disable
+    ) {
         ObjectMapper currentMapper = getNewObjectMapper();
         if (enable != null) {
-            enable.forEach(currentMapper::enable);
+            for (DeserializationFeature feature : enable) {
+                currentMapper.enable(feature);
+            }
         }
         if (disable != null) {
-            disable.forEach(currentMapper::disable);
+            for (DeserializationFeature feature : disable) {
+                currentMapper.disable(feature);
+            }
         }
-        return currentMapper.readValue(json, clazz);
+        try {
+            return currentMapper.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static <T> List<T> readList(String json, Class<T> clazz) throws JsonProcessingException {
-        return OBJECT_MAPPER.readerForListOf(clazz).readValue(json);
+    public static <T> List<T> readList(String json, Class<T> clazz) {
+        try {
+            return OBJECT_MAPPER.readerForListOf(clazz).readValue(json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static Map<String, Object> readMap(String json) throws JsonProcessingException {
-        return OBJECT_MAPPER.readValue(json, new TypeReference<>() {
-        });
+    public static Map<String, Object> readMap(String json) {
+        try {
+            return OBJECT_MAPPER.readValue(json, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static JsonNode readTree(String json) throws JsonProcessingException {
-        return OBJECT_MAPPER.readTree(json);
+    public static JsonNode readTree(String json) {
+        try {
+            return OBJECT_MAPPER.readTree(json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String minify(String json) throws JsonProcessingException {
-        JsonNode node = OBJECT_MAPPER.readTree(json);
-        return OBJECT_MAPPER.writeValueAsString(node);
+    public static String minify(String json) {
+        try {
+            JsonNode node = OBJECT_MAPPER.readTree(json);
+            return OBJECT_MAPPER.writeValueAsString(node);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String pretty(String json) throws JsonProcessingException {
-        JsonNode node = OBJECT_MAPPER.readTree(json);
-        return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+    public static String pretty(String json) {
+        try {
+            JsonNode node = OBJECT_MAPPER.readTree(json);
+            return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -3,7 +3,6 @@ package cn.lance.commons.testframework;
 import cn.lance.commons.entity.Bar;
 import cn.lance.commons.entity.Foo;
 import cn.lance.commons.util.json.JsonUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import static org.mockito.Mockito.*;
 public class MockitoTest {
 
     @Test
-    public void testMock() throws JsonProcessingException {
+    public void testMock() {
         Foo noArgFoo = new Foo();
         String noArgFooJson = JsonUtils.write(noArgFoo);
         log.info("Foo noArgJson: \n{}", noArgFooJson);
