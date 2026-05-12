@@ -198,7 +198,7 @@ public class JsonUtilsTest {
         Bar bar = JsonUtils.read(json1, Bar.class);
         log.info("bar: {}", bar);
 
-        String json2 = "{\"c\":\"T\",\"cha\":\"K\",\"str\":\"Complex\",\"bo\":true,\"boo\":false,\"by\":93,\"byt\":37,\"sho\":48,\"shor\":49,\"in\":12,\"integer\":13,\"lo\":14,\"lon\":15,\"fl\":17.0,\"flo\":18.0,\"doubleAlpha\":21.02,\"doubleBeta\":21.05,\"date\":\"2025-03-19 22:59:52\",\"localDate\":\"2025-03-19\",\"localDateTime\":\"2025-03-19 22:59:52\",\"bigInteger\":10,\"bigDecimal\":2,\"stringList\":[\"X\",\"Y\",\"Z\"],\"map\":{\"key1\":456,\"key2\":789},\"barList\":[{\"integer\":93}]}";
+        String json2 = "{\"c\":\"T\",\"cha\":\"K\",\"str\":\"Complex\",\"bo\":true,\"boo\":false,\"by\":93,\"byt\":37,\"sho\":48,\"shor\":49,\"in\":12,\"integer\":13,\"lo\":14,\"lon\":15,\"fl\":17.0,\"flo\":18.0,\"doubleAlpha\":21.02,\"doubleBeta\":21.05,\"date\":\"2025-03-19T22:59:52.000Z\",\"localDate\":\"2025-03-19\",\"localDateTime\":\"2025-03-19T22:59:52\",\"bigInteger\":10,\"bigDecimal\":2,\"stringList\":[\"X\",\"Y\",\"Z\"],\"map\":{\"key1\":456,\"key2\":789},\"barList\":[{\"integer\":93}]}";
         Foo foo = JsonUtils.read(json2, Foo.class);
         log.info("foo: {}", foo);
     }
@@ -259,9 +259,9 @@ public class JsonUtilsTest {
                   "flo" : 18.0,
                   "doubleAlpha" : 21.02,
                   "doubleBeta" : 21.05,
-                  "date" : "2025-03-19 23:13:05",
+                  "date" : "2025-03-19T23:13:05.000Z",
                   "localDate" : "2025-03-19",
-                  "localDateTime" : "2025-03-19 23:13:05",
+                  "localDateTime" : "2025-03-19T23:13:05",
                   "bigInteger" : 10,
                   "bigDecimal" : 2,
                   "stringList" : [ "X", "Y", "Z" ],
@@ -298,9 +298,9 @@ public class JsonUtilsTest {
                   "flo" : 18.0,
                   "doubleAlpha" : 21.02,
                   "doubleBeta" : 21.05,
-                  "date" : "2025-03-19 23:13:05",
+                  "date" : "2025-03-19T23:13:05.000Z",
                   "localDate" : "2025-03-19",
-                  "localDateTime" : "2025-03-19 23:13:05",
+                  "localDateTime" : "2025-03-19T23:13:05",
                   "bigInteger" : 10,
                   "bigDecimal" : 2,
                   "stringList" : [ "X", "Y", "Z" ],
@@ -344,9 +344,9 @@ public class JsonUtilsTest {
                   "flo" : 18.0,
                   "doubleAlpha" : 21.02,
                   "doubleBeta" : 21.05,
-                  "date" : "2025-03-19 23:13:05",
+                  "date" : "2025-03-19T23:13:05.000Z",
                   "localDate" : "2025-03-19",
-                  "localDateTime" : "2025-03-19 23:13:05",
+                  "localDateTime" : "2025-03-19T23:13:05",
                   "bigInteger" : 10,
                   "bigDecimal" : 2,
                   "stringList" : [ "X", "Y", "Z" ],
@@ -368,7 +368,7 @@ public class JsonUtilsTest {
         String pretty1 = JsonUtils.pretty(json1);
         log.info("pretty1: {}", pretty1);
 
-        String json2 = "{\"c\":\"T\",\"cha\":\"K\",\"str\":\"Complex\",\"bo\":true,\"boo\":false,\"by\":93,\"byt\":37,\"sho\":48,\"shor\":49,\"in\":12,\"integer\":13,\"lo\":14,\"lon\":15,\"fl\":17.0,\"flo\":18.0,\"doubleAlpha\":21.02,\"doubleBeta\":21.05,\"date\":\"2025-03-19 22:59:52\",\"localDate\":\"2025-03-19\",\"localDateTime\":\"2025-03-19 22:59:52\",\"bigInteger\":10,\"bigDecimal\":2,\"stringList\":[\"X\",\"Y\",\"Z\"],\"map\":{\"key1\":456,\"key2\":789},\"barList\":[{\"integer\":93}]}";
+        String json2 = "{\"c\":\"T\",\"cha\":\"K\",\"str\":\"Complex\",\"bo\":true,\"boo\":false,\"by\":93,\"byt\":37,\"sho\":48,\"shor\":49,\"in\":12,\"integer\":13,\"lo\":14,\"lon\":15,\"fl\":17.0,\"flo\":18.0,\"doubleAlpha\":21.02,\"doubleBeta\":21.05,\"date\":\"2025-03-19T22:59:52.000Z\",\"localDate\":\"2025-03-19\",\"localDateTime\":\"2025-03-19T22:59:52\",\"bigInteger\":10,\"bigDecimal\":2,\"stringList\":[\"X\",\"Y\",\"Z\"],\"map\":{\"key1\":456,\"key2\":789},\"barList\":[{\"integer\":93}]}";
         String pretty = JsonUtils.pretty(json2);
         log.info("pretty2: {}", pretty);
     }

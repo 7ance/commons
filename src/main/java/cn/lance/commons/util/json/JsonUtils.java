@@ -1,20 +1,13 @@
 package cn.lance.commons.util.json;
 
-
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.ext.javatime.deser.LocalDateTimeDeserializer;
-import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.module.SimpleModule;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -23,20 +16,8 @@ public class JsonUtils {
     private static final JsonMapper OBJECT_MAPPER;
 
     static {
-        String dateFormat = "yyyy-MM-dd HH:mm:ss";
-
-        SimpleModule javaTimeModule = new SimpleModule("JavaTimeModule");
-        javaTimeModule.addSerializer(new LocalDateTimeSerializer(
-                DateTimeFormatter.ofPattern(dateFormat)
-        ));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(
-                DateTimeFormatter.ofPattern(dateFormat)
-        ));
-
         OBJECT_MAPPER = JsonMapper.builder()
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .defaultDateFormat(new SimpleDateFormat(dateFormat))
-                .addModule(javaTimeModule)
                 .build();
     }
 
@@ -45,6 +26,10 @@ public class JsonUtils {
 
     public static ObjectMapper getDefaultObjectMapper() {
         return OBJECT_MAPPER;
+    }
+
+    public static ObjectMapper getNewObjectMapper() {
+        return OBJECT_MAPPER.rebuild().build();
     }
 
     public static boolean isValidJson(String json) {
