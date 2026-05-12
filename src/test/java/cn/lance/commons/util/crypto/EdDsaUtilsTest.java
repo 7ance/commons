@@ -136,6 +136,7 @@ public class EdDsaUtilsTest {
 
     @Test
     public void testOpenSslGeneratedKeyPair() throws InvalidKeySpecException, SignatureException, InvalidKeyException {
+        // test-only throwaway key pair, not associated with any real system
         String publicKey = "MCowBQYDK2VwAyEAms/tLnGF3o+WJ0S0L5bqeS+HYI1qMbvgkzdZsoR/dbk=";
         String privateKey = "MC4CAQAwBQYDK2VwBCIEICQ0HGN+I+kUOv7dAJok13qFYIrDE565DIPnoyIIrXzM";
 
