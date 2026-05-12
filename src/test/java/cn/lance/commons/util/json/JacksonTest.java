@@ -1,11 +1,11 @@
 package cn.lance.commons.util.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.util.StdDateFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -22,98 +22,91 @@ import java.util.TimeZone;
 public class JacksonTest {
 
     @Test
-    public void testDateSerialize() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+    public void testDateSerialize() throws JacksonException {
+        JsonMapper mapper = new JsonMapper();
 
         Date date = new Date();
         String dateJsonDefault = mapper.writeValueAsString(date);
         log.info("dateJsonDefault: {}", dateJsonDefault);
-        log.info("Default DateFormat: {}", mapper.getDateFormat());
 
-        mapper.setDateFormat(
-                new StdDateFormat()
+        mapper = mapper.rebuild()
+                .defaultDateFormat(new StdDateFormat()
                         .withColonInTimeZone(true)
-                        .withTimeZone(TimeZone.getDefault())
-        );
+                        .withTimeZone(TimeZone.getDefault()))
+                .build();
         String dateJsonStd = mapper.writeValueAsString(date);
         log.info("dateJsonStd: {}", dateJsonStd);
-        log.info("Standard DateFormat: {}", mapper.getDateFormat());
 
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        mapper = mapper.rebuild()
+                .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
+                .build();
         String dateJsonSimple = mapper.writeValueAsString(date);
         log.info("dateJsonSimple: {}", dateJsonSimple);
-        log.info("Simple DateFormat: {}", mapper.getDateFormat());
     }
 
     @Test
-    public void testJsr310LocalDateSerialize() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-
-        JavaTimeModule module = new JavaTimeModule();
-        mapper.registerModule(module);
+    public void testJsr310LocalDateSerialize() throws JacksonException {
+        JsonMapper mapper = new JsonMapper();
 
         LocalDate date = LocalDate.now();
         String dateJsonDefault = mapper.writeValueAsString(date);
         log.info("dateJsonDefault: {}", dateJsonDefault);
 
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper = mapper.rebuild()
+                .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .build();
         String dateJsonDisabledTimestamp = mapper.writeValueAsString(date);
         log.info("dateJsonDisabledTimestamp: {}", dateJsonDisabledTimestamp);
     }
 
     @Test
-    public void testJsr310LocalTimeSerialize() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-
-        JavaTimeModule module = new JavaTimeModule();
-        mapper.registerModule(module);
+    public void testJsr310LocalTimeSerialize() throws JacksonException {
+        JsonMapper mapper = new JsonMapper();
 
         LocalTime time = LocalTime.now();
         String dateTimeJsonDefault = mapper.writeValueAsString(time);
         log.info("timeJsonDefault: {}", dateTimeJsonDefault);
 
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper = mapper.rebuild()
+                .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .build();
         String dateTimeJsonDisabledTimestamp = mapper.writeValueAsString(time);
         log.info("timeJsonDisabledTimestamp: {}", dateTimeJsonDisabledTimestamp);
 
-        // module只能register一次，所以重新创建一个ObjectMapper实例
-        mapper = new ObjectMapper();
-
-        LocalDateTimeSerializer serializer = new LocalDateTimeSerializer(
+        SimpleModule module = new SimpleModule("JavaTimeModule");
+        module.addSerializer(new LocalDateTimeSerializer(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        );
-        module.addSerializer(serializer);
-        mapper.registerModule(module);
+        ));
+        mapper = mapper.rebuild()
+                .addModule(module)
+                .build();
         String dateJson = mapper.writeValueAsString(time);
         log.info("timeJson: {}", dateJson);
     }
 
     @Test
-    public void testJsr310LocalDateTimeSerialize() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-
-        JavaTimeModule module = new JavaTimeModule();
-        mapper.registerModule(module);
+    public void testJsr310LocalDateTimeSerialize() throws JacksonException {
+        JsonMapper mapper = new JsonMapper();
 
         LocalDateTime dateTime = LocalDateTime.now();
         String dateTimeJsonDefault = mapper.writeValueAsString(dateTime);
         log.info("dateTimeJsonDefault: {}", dateTimeJsonDefault);
 
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper = mapper.rebuild()
+                .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .build();
         String dateTimeJsonDisabledTimestamp = mapper.writeValueAsString(dateTime);
         log.info("dateTimeJsonDisabledTimestamp: {}", dateTimeJsonDisabledTimestamp);
 
-        // module只能register一次，所以重新创建一个ObjectMapper实例
-        mapper = new ObjectMapper();
-
-        LocalDateTimeSerializer serializer = new LocalDateTimeSerializer(
+        SimpleModule module = new SimpleModule("JavaTimeModule");
+        module.addSerializer(new LocalDateTimeSerializer(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        );
-        module.addSerializer(serializer);
-        mapper.registerModule(module);
+        ));
+        mapper = mapper.rebuild()
+                .addModule(module)
+                .build();
         String dateJson = mapper.writeValueAsString(dateTime);
         log.info("dateJson: {}", dateJson);
     }
-
 
 }

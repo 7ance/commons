@@ -1,14 +1,16 @@
 package cn.lance.commons.util.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.ext.javatime.deser.LocalDateTimeDeserializer;
+import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -18,33 +20,24 @@ import java.util.Map;
 
 public class JsonUtils {
 
-    private static final ObjectMapper OBJECT_MAPPER;
+    private static final JsonMapper OBJECT_MAPPER;
 
     static {
-        OBJECT_MAPPER = new ObjectMapper();
-
-        // feature serialize
-        OBJECT_MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        // feature deserialize
-        OBJECT_MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
 
-        // Date format
-        OBJECT_MAPPER.setDateFormat(new SimpleDateFormat(dateFormat));
+        SimpleModule javaTimeModule = new SimpleModule("JavaTimeModule");
+        javaTimeModule.addSerializer(new LocalDateTimeSerializer(
+                DateTimeFormatter.ofPattern(dateFormat)
+        ));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(
+                DateTimeFormatter.ofPattern(dateFormat)
+        ));
 
-        // JDK 8 date format
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        LocalDateTimeSerializer serializer = new LocalDateTimeSerializer(
-                DateTimeFormatter.ofPattern(dateFormat)
-        );
-        LocalDateTimeDeserializer deserializer = new LocalDateTimeDeserializer(
-                DateTimeFormatter.ofPattern(dateFormat)
-        );
-        javaTimeModule.addSerializer(serializer);
-        javaTimeModule.addDeserializer(LocalDateTime.class, deserializer);
-        OBJECT_MAPPER.registerModule(javaTimeModule);
+        OBJECT_MAPPER = JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .defaultDateFormat(new SimpleDateFormat(dateFormat))
+                .addModule(javaTimeModule)
+                .build();
     }
 
     private JsonUtils() {
@@ -54,15 +47,11 @@ public class JsonUtils {
         return OBJECT_MAPPER;
     }
 
-    public static ObjectMapper getNewObjectMapper() {
-        return OBJECT_MAPPER.copy();
-    }
-
     public static boolean isValidJson(String json) {
         try {
             OBJECT_MAPPER.readTree(json);
             return true;
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             return false;
         }
     }
@@ -70,7 +59,7 @@ public class JsonUtils {
     public static String write(Object obj) {
         try {
             return OBJECT_MAPPER.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -78,7 +67,7 @@ public class JsonUtils {
     public static String writePretty(Object obj) {
         try {
             return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -88,22 +77,22 @@ public class JsonUtils {
             SerializationFeature[] enable,
             SerializationFeature[] disable
     ) {
-        ObjectMapper currentMapper = getNewObjectMapper();
+        JsonMapper.Builder builder = OBJECT_MAPPER.rebuild();
 
         if (enable != null) {
             for (SerializationFeature feature : enable) {
-                currentMapper.enable(feature);
+                builder.enable(feature);
             }
         }
         if (disable != null) {
             for (SerializationFeature feature : disable) {
-                currentMapper.disable(feature);
+                builder.disable(feature);
             }
         }
 
         try {
-            return currentMapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
+            return builder.build().writeValueAsString(obj);
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -111,7 +100,7 @@ public class JsonUtils {
     public static <T> T read(String json, Class<T> clazz) {
         try {
             return OBJECT_MAPPER.readValue(json, clazz);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -122,20 +111,20 @@ public class JsonUtils {
             DeserializationFeature[] enable,
             DeserializationFeature[] disable
     ) {
-        ObjectMapper currentMapper = getNewObjectMapper();
+        JsonMapper.Builder builder = OBJECT_MAPPER.rebuild();
         if (enable != null) {
             for (DeserializationFeature feature : enable) {
-                currentMapper.enable(feature);
+                builder.enable(feature);
             }
         }
         if (disable != null) {
             for (DeserializationFeature feature : disable) {
-                currentMapper.disable(feature);
+                builder.disable(feature);
             }
         }
         try {
-            return currentMapper.readValue(json, clazz);
-        } catch (JsonProcessingException e) {
+            return builder.build().readValue(json, clazz);
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -143,7 +132,7 @@ public class JsonUtils {
     public static <T> List<T> readList(String json, Class<T> clazz) {
         try {
             return OBJECT_MAPPER.readerForListOf(clazz).readValue(json);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -152,7 +141,7 @@ public class JsonUtils {
         try {
             return OBJECT_MAPPER.readValue(json, new TypeReference<>() {
             });
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -160,7 +149,7 @@ public class JsonUtils {
     public static JsonNode readTree(String json) {
         try {
             return OBJECT_MAPPER.readTree(json);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -169,7 +158,7 @@ public class JsonUtils {
         try {
             JsonNode node = OBJECT_MAPPER.readTree(json);
             return OBJECT_MAPPER.writeValueAsString(node);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
@@ -178,7 +167,7 @@ public class JsonUtils {
         try {
             JsonNode node = OBJECT_MAPPER.readTree(json);
             return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(node);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException(e);
         }
     }
