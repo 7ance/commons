@@ -44,6 +44,12 @@ public class SnowflakeIdUtils {
     private long sequence = 0L;
     private long lastTimestamp = -1L;
 
+    /**
+     * 构造 Snowflake ID 生成器
+     *
+     * @param workerId     工作机器 ID
+     * @param datacenterId 数据中心 ID
+     */
     public SnowflakeIdUtils(long workerId, long datacenterId) {
         long maxDatacenterId = ~(-1L << datacenterIdBits);
         if (datacenterId > maxDatacenterId || datacenterId < 0) {
