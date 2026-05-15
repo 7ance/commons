@@ -151,4 +151,50 @@ public class EdDsaUtilsTest {
         Assertions.assertTrue(verified);
     }
 
+    @Test
+    public void testConvertBase64ToPemInvalidKey() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> EdDsaUtils.convertBase64ToPem("dGVzdA=="));
+    }
+
+    @Test
+    public void testConvertPemToBase64NonPem() {
+        String result = EdDsaUtils.convertPemToBase64("some-plain-base64-string");
+        Assertions.assertEquals("some-plain-base64-string", result);
+    }
+
+    @Test
+    public void testIsPublicKeyWithInvalidKey() {
+        Assertions.assertFalse(EdDsaUtils.isPublicKey("dGVzdA=="));
+    }
+
+    @Test
+    public void testIsPrivateKeyWithInvalidKey() {
+        Assertions.assertFalse(EdDsaUtils.isPrivateKey("dGVzdA=="));
+    }
+
+    @Test
+    public void testIsPublicKeyWithPrivateKey() {
+        Pair<String, String> keyPair = EdDsaUtils.generateKeyPair();
+        Assertions.assertFalse(EdDsaUtils.isPublicKey(keyPair.getRight()));
+    }
+
+    @Test
+    public void testIsPrivateKeyWithPublicKey() {
+        Pair<String, String> keyPair = EdDsaUtils.generateKeyPair();
+        Assertions.assertFalse(EdDsaUtils.isPrivateKey(keyPair.getLeft()));
+    }
+
+    @Test
+    public void testVerifyWithWrongPublicKey() throws InvalidKeySpecException, InvalidKeyException, SignatureException {
+        Pair<String, String> keyPair1 = EdDsaUtils.generateKeyPair();
+        Pair<String, String> keyPair2 = EdDsaUtils.generateKeyPair();
+
+        String plaintext = "Hello, EdDSA!";
+        String sign = EdDsaUtils.sign(keyPair1.getRight(), plaintext);
+
+        boolean result = EdDsaUtils.verify(keyPair2.getLeft(), sign, plaintext);
+        Assertions.assertFalse(result);
+    }
+
 }

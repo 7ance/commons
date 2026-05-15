@@ -49,4 +49,11 @@ public class QrCodeUtilsTest {
         Assertions.assertEquals(content, decodedText);
     }
 
+    @Test
+    public void testDecodeInvalidBytes() {
+        byte[] invalidBytes = new byte[]{1, 2, 3};
+        Assertions.assertThrows(IOException.class,
+                () -> QrCodeUtils.decode(invalidBytes));
+    }
+
 }

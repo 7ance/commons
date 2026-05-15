@@ -277,4 +277,72 @@ public class RsaUtilsTest {
         log.info("privateKeyLength: {}", privateKeyLength);
     }
 
+    @Test
+    public void testConvertBase64ToPemInvalidKey() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> RsaUtils.convertBase64ToPem("dGVzdA=="));
+    }
+
+    @Test
+    public void testConvertPemToBase64NonPem() {
+        String result = RsaUtils.convertPemToBase64("some-plain-base64-string");
+        Assertions.assertEquals("some-plain-base64-string", result);
+    }
+
+    @Test
+    public void testIsPublicKeyWithInvalidKey() {
+        Assertions.assertFalse(RsaUtils.isPublicKey("dGVzdA=="));
+    }
+
+    @Test
+    public void testIsPrivateKeyWithInvalidKey() {
+        Assertions.assertFalse(RsaUtils.isPrivateKey("dGVzdA=="));
+    }
+
+    @Test
+    public void testIsPublicKeyWithPrivateKey() {
+        Pair<String, String> keyPair = RsaUtils.generateKeyPair();
+        Assertions.assertFalse(RsaUtils.isPublicKey(keyPair.getRight()));
+    }
+
+    @Test
+    public void testIsPrivateKeyWithPublicKey() {
+        Pair<String, String> keyPair = RsaUtils.generateKeyPair();
+        Assertions.assertFalse(RsaUtils.isPrivateKey(keyPair.getLeft()));
+    }
+
+    @Test
+    public void testGetPublicKeyLengthWithWrongKeyType() {
+        Pair<String, String> keyPair = RsaUtils.generateKeyPair();
+        Assertions.assertEquals(-1, RsaUtils.getPublicKeyLength(keyPair.getRight()));
+    }
+
+    @Test
+    public void testGetPrivateKeyLengthWithWrongKeyType() {
+        Pair<String, String> keyPair = RsaUtils.generateKeyPair();
+        Assertions.assertEquals(-1, RsaUtils.getPrivateKeyLength(keyPair.getLeft()));
+    }
+
+    @Test
+    public void testGetPublicKeyLengthWithInvalidKey() {
+        Assertions.assertEquals(-1, RsaUtils.getPublicKeyLength("dGVzdA=="));
+    }
+
+    @Test
+    public void testGetPrivateKeyLengthWithInvalidKey() {
+        Assertions.assertEquals(-1, RsaUtils.getPrivateKeyLength("dGVzdA=="));
+    }
+
+    @Test
+    public void testVerifySignatureWithWrongPublicKey() throws InvalidKeySpecException, InvalidKeyException, SignatureException {
+        Pair<String, String> keyPair1 = RsaUtils.generateKeyPair();
+        Pair<String, String> keyPair2 = RsaUtils.generateKeyPair();
+
+        String plaintext = "Hello, RSA!";
+        String sign = RsaUtils.sign(keyPair1.getRight(), plaintext);
+
+        boolean result = RsaUtils.verify(keyPair2.getLeft(), sign, plaintext);
+        Assertions.assertFalse(result);
+    }
+
 }

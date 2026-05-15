@@ -30,6 +30,18 @@ public class TotpUtilsTest {
     }
 
     @Test
+    public void testGetSecretFromUriWithoutQuery() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> TotpUtils.getSecretFromUri("otpauth://totp/foo"));
+    }
+
+    @Test
+    public void testGetSecretFromUriWithoutSecret() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> TotpUtils.getSecretFromUri("otpauth://totp/foo?issuer=bar&digits=6"));
+    }
+
+    @Test
     public void testGenerateCode() {
         String issuer = "Foo";
         String accountName = "bar";
@@ -65,6 +77,43 @@ public class TotpUtilsTest {
         boolean verifiedInterval = TotpUtils.verify(secret, passcode, 0);
         log.info("OTP verified with interval: {}", verifiedInterval);
         Assertions.assertTrue(verifiedInterval);
+    }
+
+    @Test
+    public void testVerifyWithWrongPasscode() {
+        String issuer = "Foo";
+        String accountName = "bar";
+
+        String uri = TotpUtils.generate(issuer, accountName);
+        String secret = TotpUtils.getSecretFromUri(uri);
+
+        boolean result = TotpUtils.verify(secret, "000000");
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    public void testVerifyWithOverlongPasscode() {
+        String issuer = "Foo";
+        String accountName = "bar";
+
+        String uri = TotpUtils.generate(issuer, accountName);
+        String secret = TotpUtils.getSecretFromUri(uri);
+
+        Assertions.assertThrows(RuntimeException.class,
+                () -> TotpUtils.verify(secret, "1234567890"));
+    }
+
+    @Test
+    public void testVerifyWithLargeInterval() {
+        String issuer = "Foo";
+        String accountName = "bar";
+
+        String uri = TotpUtils.generate(issuer, accountName);
+        String secret = TotpUtils.getSecretFromUri(uri);
+
+        String passcode = TotpUtils.generateCode(secret);
+        boolean verified = TotpUtils.verify(secret, passcode, 5);
+        Assertions.assertTrue(verified);
     }
 
 }

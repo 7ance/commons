@@ -26,6 +26,14 @@ public class JsonUtilsTest {
     }
 
     @Test
+    public void testGetNewObjectMapper() {
+        ObjectMapper newObjectMapper = JsonUtils.getNewObjectMapper();
+        Assertions.assertNotNull(newObjectMapper);
+        ObjectMapper defaultMapper = JsonUtils.getDefaultObjectMapper();
+        Assertions.assertNotSame(defaultMapper, newObjectMapper);
+    }
+
+    @Test
     public void testIsValidJson() {
         String str1 = "{\"a\":1,\"b\":2,\"c\":3}";
         boolean valid1 = JsonUtils.isValidJson(str1);
@@ -193,6 +201,33 @@ public class JsonUtilsTest {
     }
 
     @Test
+    public void testWriteWithFeatureNullEnable() {
+        Bar bar = new Bar();
+        bar.setInteger(93);
+        String json = JsonUtils.writeWithFeature(bar, null, new SerializationFeature[0]);
+        Assertions.assertNotNull(json);
+        Assertions.assertTrue(json.contains("93"));
+    }
+
+    @Test
+    public void testWriteWithFeatureNullDisable() {
+        Bar bar = new Bar();
+        bar.setInteger(93);
+        String json = JsonUtils.writeWithFeature(bar, new SerializationFeature[0], null);
+        Assertions.assertNotNull(json);
+        Assertions.assertTrue(json.contains("93"));
+    }
+
+    @Test
+    public void testWriteWithFeatureBothNull() {
+        Bar bar = new Bar();
+        bar.setInteger(93);
+        String json = JsonUtils.writeWithFeature(bar, null, null);
+        Assertions.assertNotNull(json);
+        Assertions.assertTrue(json.contains("93"));
+    }
+
+    @Test
     public void testRead() {
         String json1 = "{\"integer\":93}";
         Bar bar = JsonUtils.read(json1, Bar.class);
@@ -201,6 +236,12 @@ public class JsonUtilsTest {
         String json2 = "{\"c\":\"T\",\"cha\":\"K\",\"str\":\"Complex\",\"bo\":true,\"boo\":false,\"by\":93,\"byt\":37,\"sho\":48,\"shor\":49,\"in\":12,\"integer\":13,\"lo\":14,\"lon\":15,\"fl\":17.0,\"flo\":18.0,\"doubleAlpha\":21.02,\"doubleBeta\":21.05,\"date\":\"2025-03-19T22:59:52.000Z\",\"localDate\":\"2025-03-19\",\"localDateTime\":\"2025-03-19T22:59:52\",\"bigInteger\":10,\"bigDecimal\":2,\"stringList\":[\"X\",\"Y\",\"Z\"],\"map\":{\"key1\":456,\"key2\":789},\"barList\":[{\"integer\":93}]}";
         Foo foo = JsonUtils.read(json2, Foo.class);
         log.info("foo: {}", foo);
+    }
+
+    @Test
+    public void testReadInvalidJson() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> JsonUtils.read("{invalid", Bar.class));
     }
 
     @Test
@@ -223,6 +264,30 @@ public class JsonUtilsTest {
     }
 
     @Test
+    public void testReadWithFeatureNullEnable() {
+        String json = "{\"integer\":93}";
+        Bar bar = JsonUtils.readWithFeature(json, Bar.class, null, new DeserializationFeature[0]);
+        Assertions.assertNotNull(bar);
+        Assertions.assertEquals(93, bar.getInteger());
+    }
+
+    @Test
+    public void testReadWithFeatureNullDisable() {
+        String json = "{\"integer\":93}";
+        Bar bar = JsonUtils.readWithFeature(json, Bar.class, new DeserializationFeature[0], null);
+        Assertions.assertNotNull(bar);
+        Assertions.assertEquals(93, bar.getInteger());
+    }
+
+    @Test
+    public void testReadWithFeatureBothNull() {
+        String json = "{\"integer\":93}";
+        Bar bar = JsonUtils.readWithFeature(json, Bar.class, null, null);
+        Assertions.assertNotNull(bar);
+        Assertions.assertEquals(93, bar.getInteger());
+    }
+
+    @Test
     public void testReadList() {
         List<Bar> barList = new ArrayList<>();
         barList.add(new Bar(1));
@@ -236,6 +301,12 @@ public class JsonUtilsTest {
 
         List<Foo> fooListParsed = JsonUtils.readList(listJson, Foo.class);
         log.info("fooListParsed: {}", fooListParsed);
+    }
+
+    @Test
+    public void testReadListInvalidJson() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> JsonUtils.readList("[invalid", Bar.class));
     }
 
     @Test
@@ -278,6 +349,12 @@ public class JsonUtilsTest {
     }
 
     @Test
+    public void testReadMapInvalidJson() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> JsonUtils.readMap("{invalid"));
+    }
+
+    @Test
     public void testReadTree() {
         String json = """
                 {
@@ -314,6 +391,12 @@ public class JsonUtilsTest {
                 }""";
         JsonNode jsonNode = JsonUtils.readTree(json);
         log.info("jsonNode: {}", jsonNode);
+    }
+
+    @Test
+    public void testReadTreeInvalidJson() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> JsonUtils.readTree("{invalid"));
     }
 
     @Test
@@ -363,6 +446,12 @@ public class JsonUtilsTest {
     }
 
     @Test
+    public void testMinifyInvalidJson() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> JsonUtils.minify("{invalid"));
+    }
+
+    @Test
     public void pretty() {
         String json1 = "{\"integer\":93}";
         String pretty1 = JsonUtils.pretty(json1);
@@ -371,6 +460,12 @@ public class JsonUtilsTest {
         String json2 = "{\"c\":\"T\",\"cha\":\"K\",\"str\":\"Complex\",\"bo\":true,\"boo\":false,\"by\":93,\"byt\":37,\"sho\":48,\"shor\":49,\"in\":12,\"integer\":13,\"lo\":14,\"lon\":15,\"fl\":17.0,\"flo\":18.0,\"doubleAlpha\":21.02,\"doubleBeta\":21.05,\"date\":\"2025-03-19T22:59:52.000Z\",\"localDate\":\"2025-03-19\",\"localDateTime\":\"2025-03-19T22:59:52\",\"bigInteger\":10,\"bigDecimal\":2,\"stringList\":[\"X\",\"Y\",\"Z\"],\"map\":{\"key1\":456,\"key2\":789},\"barList\":[{\"integer\":93}]}";
         String pretty = JsonUtils.pretty(json2);
         log.info("pretty2: {}", pretty);
+    }
+
+    @Test
+    public void testPrettyInvalidJson() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> JsonUtils.pretty("{invalid"));
     }
 
 }

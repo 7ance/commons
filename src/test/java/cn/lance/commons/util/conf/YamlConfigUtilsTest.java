@@ -2,6 +2,7 @@ package cn.lance.commons.util.conf;
 
 import cn.lance.commons.entity.YamlConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -36,4 +37,41 @@ public class YamlConfigUtilsTest {
         log.info("YAML(object) prefix1.key2: {}", yamlConfig.getPrefix1().getKey2());
         log.info("YAML(object) prefix2.list: {}", yamlConfig.getPrefix2().getList());
     }
+
+    @Test
+    public void testLoadPropertiesNullFilename() {
+        Assertions.assertThrows(NullPointerException.class,
+                () -> ConfigUtils.loadProperties(null));
+    }
+
+    @Test
+    public void testLoadYamlNullFilename() {
+        Assertions.assertThrows(NullPointerException.class,
+                () -> ConfigUtils.loadYaml(null));
+    }
+
+    @Test
+    public void testLoadYamlNullClass() {
+        Assertions.assertThrows(NullPointerException.class,
+                () -> ConfigUtils.loadYaml("sample.yml", null));
+    }
+
+    @Test
+    public void testLoadPropertiesMissingFile() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> ConfigUtils.loadProperties("nonexistent.properties"));
+    }
+
+    @Test
+    public void testLoadYamlMissingFile() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> ConfigUtils.loadYaml("nonexistent.yml"));
+    }
+
+    @Test
+    public void testLoadYamlMissingFileWithClass() {
+        Assertions.assertThrows(RuntimeException.class,
+                () -> ConfigUtils.loadYaml("nonexistent.yml", YamlConfig.class));
+    }
+
 }
